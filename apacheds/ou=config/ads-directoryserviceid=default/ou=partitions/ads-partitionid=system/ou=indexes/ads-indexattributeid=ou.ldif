@@ -1,0 +1,15 @@
+dn: ads-indexAttributeId=ou,ou=indexes,ads-partitionId=system,ou=partitions,ads-
+ directoryServiceId=default,ou=config
+ads-indexhasreverse: FALSE
+entryCSN: 20210218175425.257000Z#000000#000#000000
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+createTimestamp: 20210218175425.257Z
+creatorsName: uid=admin,ou=system
+ads-indexattributeid: ou
+ads-enabled: TRUE
+entryUUID: 7b8730bd-7c39-4546-950b-eb38b491089c
+ads-indexcachesize: 100
+entryParentId: 7b501f6e-15c7-439a-8cd2-49fe2b475ada

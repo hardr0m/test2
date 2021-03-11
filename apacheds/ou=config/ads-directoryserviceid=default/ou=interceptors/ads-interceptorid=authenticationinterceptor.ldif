@@ -1,0 +1,16 @@
+dn: ads-interceptorId=authenticationInterceptor,ou=interceptors,ads-directorySer
+ viceId=default,ou=config
+entryCSN: 20210218175425.116000Z#000000#000#000000
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+objectclass: ads-authenticationInterceptor
+createTimestamp: 20210218175425.116Z
+creatorsName: uid=admin,ou=system
+ads-enabled: TRUE
+entryUUID: d03cc749-6f35-47c5-bf7b-f35849d2e9e5
+ads-interceptorclassname: org.apache.directory.server.core.authn.AuthenticationI
+ nterceptor
+ads-interceptororder: 2
+ads-interceptorid: authenticationInterceptor
+entryParentId: 974e8812-04f6-48a1-88db-02d86ac64012

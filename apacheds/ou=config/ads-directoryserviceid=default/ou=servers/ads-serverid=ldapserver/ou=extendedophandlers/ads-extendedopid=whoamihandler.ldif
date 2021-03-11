@@ -1,0 +1,14 @@
+dn: ads-extendedOpId=whoAmIHandler,ou=extendedOpHandlers,ads-serverId=ldapServer
+ ,ou=servers,ads-directoryServiceId=default,ou=config
+ads-extendedopid: whoAmIHandler
+entryCSN: 20210218175425.355000Z#000001#000#000000
+objectclass: ads-extendedOpHandler
+objectclass: ads-base
+objectclass: top
+createTimestamp: 20210218175425.356Z
+creatorsName: uid=admin,ou=system
+ads-extendedophandlerclass: org.apache.directory.server.ldap.handlers.extended.W
+ hoAmIHandler
+ads-enabled: TRUE
+entryUUID: d1017d16-b43a-4093-9205-dd8aa7171c7c
+entryParentId: 99f0374d-af6f-482a-8b7d-ed55e895fcb8

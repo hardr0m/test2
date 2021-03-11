@@ -1,0 +1,10 @@
+dn: ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=defa
+ ult,ou=config
+entryCSN: 20210218175425.272000Z#000000#000#000000
+ou: indexes
+objectclass: organizationalUnit
+objectclass: top
+createTimestamp: 20210218175425.272Z
+creatorsName: uid=admin,ou=system
+entryUUID: 66ac9259-026f-43a3-95e9-112dbb9fc778
+entryParentId: 9126bdce-70b7-4d2b-88d9-699a5f50c6bb

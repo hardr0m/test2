@@ -1,0 +1,17 @@
+dn: ads-partitionId=system,ou=partitions,ads-directoryServiceId=default,ou=confi
+ g
+entryCSN: 20210218175425.235000Z#000000#000#000000
+objectclass: top
+objectclass: ads-base
+objectclass: ads-partition
+objectclass: ads-jdbmPartition
+createTimestamp: 20210218175425.235Z
+creatorsName: uid=admin,ou=system
+ads-partitionsuffix: ou=system
+ads-enabled: TRUE
+entryUUID: e5075964-3756-4a47-b874-665760cf6305
+ads-partitionid: system
+ads-jdbmpartitionoptimizerenabled: TRUE
+ads-partitioncachesize: 10000
+ads-partitionsynconwrite: TRUE
+entryParentId: 06a1f620-07b6-45fd-b6dc-3ece1a0ff5e9

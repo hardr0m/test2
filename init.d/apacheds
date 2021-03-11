@@ -1,0 +1,225 @@
+#!/bin/sh -e
+#
+# /etc/init.d/apacheds -- startup script for Apache Directory Server
+#
+### BEGIN INIT INFO
+# Provides:          apacheds
+# Required-Start:    $local_fs $remote_fs $network
+# Required-Stop:     $local_fs $remote_fs $network
+# Should-Start:      $named
+# Should-Stop:       $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start ApacheDS
+# Description:       Start Apache Directory Server
+### END INIT INFO
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+NAME=apacheds
+DESC="Apache Directory Server"
+ADS_HOME=/usr/share/$NAME
+LOGDIR="/var/log/$NAME"
+START_JAR="$ADS_HOME/lib/apacheds-service.jar"
+DEFAULT=/etc/default/$NAME
+PIDFILE="/var/run/$NAME.pid"
+
+ADS_USER=apacheds
+
+if [ `id -u` -ne 0 ]; then
+	echo "You need root privileges to run this script"
+	exit 1
+fi
+
+# Make sure apacheds is started with system locale
+if [ -r /etc/default/locale ]; then
+	. /etc/default/locale
+	export LANG
+fi
+
+. /lib/lsb/init-functions
+
+if [ -r /etc/default/rcS ]; then
+	. /etc/default/rcS
+fi
+
+
+# This function sets the variable JDK_DIRS
+find_jdks()
+{
+    for java_version in 9 8 7
+    do
+        for jvmdir in /usr/lib/jvm/java-${java_version}-openjdk-* \
+                      /usr/lib/jvm/jdk-${java_version}-oracle-* \
+                      /usr/lib/jvm/jre-${java_version}-oracle-*
+        do
+            if [ -d "${jvmdir}" -a "${jvmdir}" != "/usr/lib/jvm/java-${java_version}-openjdk-common" ]
+            then
+                JDK_DIRS="${JDK_DIRS} ${jvmdir}"
+            fi
+        done
+    done
+
+    # Add older non multi arch installations
+    JDK_DIRS="${JDK_DIRS} /usr/lib/jvm/java-7-oracle"
+}
+
+# The first existing directory is used for JAVA_HOME (if JAVA_HOME is not
+# defined in $DEFAULT)
+JDK_DIRS="/usr/lib/jvm/default-java"
+find_jdks
+
+# Look for the right JVM to use
+for jdir in $JDK_DIRS; do
+	if [ -d "$jdir" -a -z "${JAVA_HOME}" ]; then
+		JAVA_HOME="$jdir"
+	fi
+done
+export JAVA_HOME
+
+export JAVA="$JAVA_HOME/bin/java"
+
+# Check for JAVA_HOME
+if [ -z "$JAVA_HOME" ]; then
+	log_failure_msg "Could not start $DESC because no Java runtime was found."
+	exit 0
+fi
+
+
+# overwrite settings from default file
+if [ -f "$DEFAULT" ]; then
+	. "$DEFAULT"
+fi
+
+# Timeout in seconds for the shutdown of ApacheDS
+ADS_SHUTDOWN=30
+
+
+# Check whether apacheds is still installed (it might not be if this package was
+# removed and not purged)
+if [ ! -r "$START_JAR" ]; then
+	log_failure_msg "$NAME is not installed"
+	exit 1
+fi
+
+JAVA_OPTIONS="${JAVA_OPTS} \
+            -Dapacheds.controls=${ADS_CONTROLS} \
+            -Dapacheds.extendedOperations=${ADS_EXTENDED_OPERATIONS} \
+            -Dlog4j.configuration=file:${ADS_INSTANCES}/${ADS_INSTANCE}/conf/log4j.properties \
+            -Dapacheds.log.dir=${ADS_INSTANCES}/${ADS_INSTANCE}/log \
+            -cp '${ADS_HOME}/lib/*' \
+            org.apache.directory.server.UberjarMain \
+            ${ADS_INSTANCES}/${ADS_INSTANCE}/"
+
+export JAVA_OPTIONS
+
+
+case "$1" in
+  start)
+	log_daemon_msg "Starting $DESC instance '$ADS_INSTANCE'" "$NAME"
+	if start-stop-daemon --quiet --test --start --pidfile "$PIDFILE" \
+	                --user "$ADS_USER" --startas "$JAVA" > /dev/null; then
+
+		if [ -f $PIDFILE ] ; then
+			log_warning_msg "$PIDFILE exists, but apacheds was not running. Ignoring $PIDFILE"
+		fi
+
+		ADS_CMD="$JAVA $JAVA_OPTIONS"
+
+		start-stop-daemon --start --pidfile "$PIDFILE" --chuid "$ADS_USER" --verbose \
+		    --chdir "$ADS_HOME" --background --make-pidfile -x /bin/bash -- -c \
+		    "$ADS_CMD"
+
+		log_daemon_msg "$DESC started" "$NAME"
+
+		sleep 5
+		if start-stop-daemon --test --start --pidfile "$PIDFILE" \
+			--user $ADS_USER --exec "$JAVA" >/dev/null; then
+			log_end_msg 1
+		else
+			log_end_msg 0
+		fi
+
+	else
+		log_warning_msg "(already running)."
+		log_end_msg 0
+		exit 1
+	fi
+	;;
+
+  stop)
+	log_daemon_msg "Stopping $DESC instance '$ADS_INSTANCE'" "$NAME"
+
+	if start-stop-daemon --quiet --test --start --pidfile "$PIDFILE" \
+		--user "$ADS_USER" --startas "$JAVA" > /dev/null; then
+		if [ -x "$PIDFILE" ]; then
+			log_warning_msg "(not running but $PIDFILE exists)."
+		else
+			log_warning_msg "(not running)."
+		fi
+	else
+		start-stop-daemon --quiet --stop \
+			--pidfile "$PIDFILE" --user "$ADS_USER" \
+			--startas "$JAVA" > /dev/null
+		while ! start-stop-daemon --quiet --test --start \
+			  --pidfile "$PIDFILE" --user "$ADS_USER" \
+			  --startas "$JAVA" > /dev/null; do
+			sleep 1
+			log_progress_msg "."
+			ADS_SHUTDOWN=`expr $ADS_SHUTDOWN - 1` || true
+			if [ $ADS_SHUTDOWN -ge 0 ]; then
+				start-stop-daemon --oknodo --quiet --stop \
+					--pidfile "$PIDFILE" --user "$ADS_USER" \
+					--startas "$JAVA"
+			else
+				log_progress_msg " (killing) "
+				start-stop-daemon --stop --signal 9 --oknodo \
+					--quiet --pidfile "$PIDFILE" \
+					--user "$ADS_USER"
+			fi
+		done
+		rm -f "$PIDFILE"
+		log_daemon_msg "$DESC stopped." "$NAME"
+		log_end_msg 0
+	fi
+	;;
+
+  status)
+	if start-stop-daemon --quiet --test --start --pidfile "$PIDFILE" \
+		--user "$ADS_USER" --startas "$JAVA" > /dev/null; then
+
+		if [ -f "$PIDFILE" ]; then
+		    log_success_msg "$DESC is not running, but pid file exists."
+			exit 1
+		else
+		    log_success_msg "$DESC is not running."
+			exit 3
+		fi
+	else
+		log_success_msg "$DESC is running with pid `cat $PIDFILE`"
+	fi
+	;;
+
+  restart|force-reload)
+	if ! start-stop-daemon --quiet --test --start --pidfile "$PIDFILE" \
+		--user "$ADS_USER" --startas "$JAVA" > /dev/null; then
+		$0 stop $*
+		sleep 1
+	fi
+	$0 start $*
+	;;
+
+  try-restart)
+	if start-stop-daemon --quiet --test --start --pidfile "$PIDFILE" \
+		--user "$ADS_USER" --startas "$JAVA" > /dev/null; then
+		$0 start $*
+	fi
+	;;
+
+  *)
+	log_success_msg "Usage: $0 {start|stop|restart|force-reload|try-restart|status}"
+	exit 1
+	;;
+esac
+
+exit 0
+

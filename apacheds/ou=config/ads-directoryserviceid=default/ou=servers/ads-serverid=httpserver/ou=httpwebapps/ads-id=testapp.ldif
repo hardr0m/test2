@@ -1,0 +1,14 @@
+dn: ads-id=testapp,ou=httpWebApps,ads-serverId=httpServer,ou=servers,ads-directo
+ ryServiceId=default,ou=config
+entryCSN: 20210218175425.327000Z#000000#000#000000
+objectclass: ads-httpWebApp
+objectclass: ads-base
+objectclass: top
+createTimestamp: 20210218175425.327Z
+creatorsName: uid=admin,ou=system
+ads-httpappctxpath: /foo
+ads-httpwarfile: /path/to/foo/war
+ads-enabled: FALSE
+entryUUID: 7a18514d-529d-430d-a643-144d7b82d0c3
+ads-id: testapp
+entryParentId: 3aa67455-f1b7-47be-8817-3cba02d5b6e4

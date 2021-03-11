@@ -1,0 +1,4 @@
+time=1597261577
+cmd=/usr/sbin/apache2
+version=2.441
+mods=core mod_so mod_watchdog http_core mod_log_config mod_logio mod_version mod_unixd

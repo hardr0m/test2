@@ -1,0 +1,12 @@
+dn: ads-changeLogId=defaultChangeLog,ads-directoryServiceId=default,ou=config
+ads-changelogexposed: FALSE
+entryCSN: 20210218175425.088000Z#000000#000#000000
+objectclass: top
+objectclass: ads-base
+objectclass: ads-changeLog
+createTimestamp: 20210218175425.088Z
+creatorsName: uid=admin,ou=system
+ads-enabled: FALSE
+entryUUID: 3c57ba21-5486-4a74-80ef-2f2b1df3ad3c
+ads-changelogid: defaultChangeLog
+entryParentId: 731feb1a-236f-4f21-a3d7-f1429547a0ad

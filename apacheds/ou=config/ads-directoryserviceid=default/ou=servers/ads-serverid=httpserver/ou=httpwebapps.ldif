@@ -1,0 +1,10 @@
+dn: ou=httpWebApps,ads-serverId=httpServer,ou=servers,ads-directoryServiceId=def
+ ault,ou=config
+entryCSN: 20210218175425.326000Z#000000#000#000000
+ou: httpWebApps
+objectclass: organizationalUnit
+objectclass: top
+createTimestamp: 20210218175425.326Z
+creatorsName: uid=admin,ou=system
+entryUUID: 3aa67455-f1b7-47be-8817-3cba02d5b6e4
+entryParentId: ecd27484-375a-4866-984b-ce1f96550054

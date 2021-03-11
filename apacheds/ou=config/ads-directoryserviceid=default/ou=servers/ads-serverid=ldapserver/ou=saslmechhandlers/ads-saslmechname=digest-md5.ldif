@@ -1,0 +1,14 @@
+dn: ads-saslMechName=DIGEST-MD5,ou=saslMechHandlers,ads-serverId=ldapServer,ou=s
+ ervers,ads-directoryServiceId=default,ou=config
+ads-saslmechname: DIGEST-MD5
+entryCSN: 20210218175425.358000Z#000000#000#000000
+ads-saslmechclassname: org.apache.directory.server.ldap.handlers.sasl.digestMD5.
+ DigestMd5MechanismHandler
+objectclass: ads-saslMechHandler
+objectclass: ads-base
+objectclass: top
+createTimestamp: 20210218175425.358Z
+creatorsName: uid=admin,ou=system
+ads-enabled: TRUE
+entryUUID: 9f7cdfca-64ed-4871-9b4f-e87a74c1ce70
+entryParentId: 463b11b3-d003-461c-8a40-39e2f00793e5

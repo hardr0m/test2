@@ -1,0 +1,15 @@
+dn: ads-saslMechName=NTLM,ou=saslMechHandlers,ads-serverId=ldapServer,ou=servers
+ ,ads-directoryServiceId=default,ou=config
+ads-ntlmmechprovider: com.foo.Bar
+ads-saslmechname: NTLM
+entryCSN: 20210218175425.360000Z#000000#000#000000
+ads-saslmechclassname: org.apache.directory.server.ldap.handlers.sasl.ntlm.NtlmM
+ echanismHandler
+objectclass: ads-saslMechHandler
+objectclass: ads-base
+objectclass: top
+createTimestamp: 20210218175425.360Z
+creatorsName: uid=admin,ou=system
+ads-enabled: TRUE
+entryUUID: 5875b51c-ee5e-4c65-9b11-0ea29bd38b66
+entryParentId: 463b11b3-d003-461c-8a40-39e2f00793e5

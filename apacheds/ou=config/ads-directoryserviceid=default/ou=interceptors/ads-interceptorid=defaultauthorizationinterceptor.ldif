@@ -1,0 +1,15 @@
+dn: ads-interceptorId=defaultAuthorizationInterceptor,ou=interceptors,ads-direct
+ oryServiceId=default,ou=config
+entryCSN: 20210218175425.156000Z#000000#000#000000
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+createTimestamp: 20210218175425.156Z
+creatorsName: uid=admin,ou=system
+ads-enabled: TRUE
+entryUUID: 81db5aea-ed01-4e0b-9a49-cb9a1f2d7802
+ads-interceptorclassname: org.apache.directory.server.core.authz.DefaultAuthoriz
+ ationInterceptor
+ads-interceptororder: 5
+ads-interceptorid: defaultAuthorizationInterceptor
+entryParentId: 974e8812-04f6-48a1-88db-02d86ac64012
